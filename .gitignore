@@ -1,0 +1,6 @@
+# Ignore vscode folder
+.vscode
+
+node_modules/
+
+.prettierrc

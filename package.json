@@ -1,0 +1,27 @@
+{
+    "name": "workbench",
+    "version": "0.0.1",
+    "description": "",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "workbench": "node src/index.js workbench",
+        "help": "node src/index.js help",
+        "generate": "node src/index.js generate",
+        "naive": "node src/index.js naive",
+        "stream": "node src/index.js stream",
+        "split-check": "node src/index.js split-check",
+        "pressure": "node src/index.js pressure",
+        "compare": "node src/index.js compare"
+    },
+    "bin": {
+        "workbench": "src/index.js"
+    },
+    "engines": {
+        "node": ">=24.0"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC"
+}
