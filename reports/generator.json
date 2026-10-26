@@ -1,0 +1,12 @@
+{
+    "settings": {
+        "rows": 2,
+        "payloadBytes": 32,
+        "seed": 12345,
+        "errorRatio": 0.25,
+        "outputPath": "small.ndjson"
+    },
+    "output-path": "C:\\Users\\gaikw\\Documents\\OS\\Code\\workbench\\data\\small.ndjson",
+    "line-count": 2,
+    "byte-count": 420
+}

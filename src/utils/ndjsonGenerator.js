@@ -3,9 +3,9 @@
 // Internal modules importer here
 import { lcg } from "./randomNumberGenerator.js";
 
-/* NDJSON generator function */
+/* NDJSON generator function is a generator type of fn. That yeilds one value at a time. */
 
-const ndjsonGenerator = (settings) => {
+function* ndjsonGenerator(settings) {
     let rows = settings["rows"];
     let ndjsonObject = {
         id: "",
@@ -117,8 +117,9 @@ const ndjsonGenerator = (settings) => {
         ndjsonObject["IP"] = generateRandomIp();
         ndjsonObject["payload"] = payloadGenerator(receivedPayload);
 
-        console.log(ndjsonObject);
+        let finalData = JSON.stringify(ndjsonObject) + "\n";
+        yield finalData;
     }
-};
+}
 
 export { ndjsonGenerator };

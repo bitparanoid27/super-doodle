@@ -84,7 +84,7 @@ const supportedFlags = [
     "output-path",
 ];
 
-const overView = () => {
+const overView = async () => {
     let receivedCommand = process.argv[2];
     let receivedFlag = process.argv[3];
 
@@ -124,11 +124,11 @@ const overView = () => {
     console.log(`${receivedCommandLowerCase}: is not built and wired`);
     try {
         if (receivedCommandLowerCase === "generate") {
-            runGenerate(rest);
+            await runGenerate(rest);
         }
     } catch (error) {
         console.error(`${error.message}`);
         process.exitCode = 1;
     }
 };
-overView();
+await overView();

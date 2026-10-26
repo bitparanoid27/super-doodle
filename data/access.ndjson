@@ -1,0 +1,2 @@
+{"id":1,"timeStamp":"2026-01-01T00:00:01.000Z","method":"POST","path":"/api/orders","status":"304","IP":"203.0.113.96","user-agent":"curl/8.4.0","payload":"ZjocAmGOFCTFytlSQbHX09u5w3Vj3bCQ"}
+{"id":2,"timeStamp":"2026-01-01T00:00:02.000Z","method":"DELETE","path":"/","status":"403","IP":"198.51.100.201","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0","payload":"pebmjqHfx7g6OAwmPrn4Aeuc3O65Kcs1"}

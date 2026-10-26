@@ -2,6 +2,11 @@
 import { parseArgs } from "node:util";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
+import fs from "node:fs/promises";
+import { createWriteStream } from "node:fs";
+import { pipeline } from "node:stream/promises";
+import { once } from "node:events";
+import { Buffer } from "node:buffer";
 
 // Internal modules imported here.
 import { lcg } from "./utils/randomNumberGenerator.js";
@@ -11,13 +16,19 @@ import { ndjsonGenerator } from "./utils/ndjsonGenerator.js";
 let currentFilePath = import.meta.url; // give me current file path
 let fileURL = fileURLToPath(currentFilePath); //strips out file:/// and returns me fileURL
 let __dirname = path.dirname(fileURL); // returns me current directory name
-let destinationPath = path.join(__dirname, "../", "data");
+
+let destinationDirPath = path.join(__dirname, "../", "data");
+let reportsDirPath = path.join(__dirname, "../", "reports");
+
+let reportFilePath = path.join(reportsDirPath, "generator.json");
+await fs.mkdir(destinationDirPath, { recursive: true });
+await fs.mkdir(reportsDirPath, { recursive: true });
 
 // parseArgs sorts flags into values and commands into positionals.
 // args inside parseArgs reads list of word which I want it to read.
 // without it, process.argv.slice(2) would be read. Generate command would be received. And it would thrown an error
 
-const runGenerate = (args) => {
+const runGenerate = async (args) => {
     const { values } = parseArgs({
         args,
         options: {
@@ -42,6 +53,11 @@ const runGenerate = (args) => {
     const seed = Number(values.seed ?? "12345");
     const errorRatio = Number(values["error-ratio"] ?? "0.25");
     const outputPath = values["output-path"] ?? "data/access.ndjson";
+
+    //
+    const finalDestination =
+        outputPath === "data/access.ndjson" ? "access.ndjson" : outputPath;
+    let destinationFilePath = path.join(destinationDirPath, outputPath);
 
     if (!Number.isInteger(rows) || rows < 1) {
         throw new Error(
@@ -78,7 +94,36 @@ const runGenerate = (args) => {
     }
 
     const settings = { rows, payloadBytes, seed, errorRatio, outputPath };
-    ndjsonGenerator(settings);
+
+    // fileHandle creation
+
+    const stream = createWriteStream(destinationFilePath);
+    let lineCount = 0;
+    let byteSize = 0;
+    for (const rowValue of ndjsonGenerator(settings)) {
+        lineCount = lineCount + 1;
+        let currentByteCount = Buffer.byteLength(rowValue);
+        byteSize = byteSize + currentByteCount;
+        const ok = stream.write(rowValue);
+        if (!ok) await once(stream, "drain");
+        // console.log(`Row id: ${JSON.parse(rowValue)["id"]} and ok: ${ok} `);
+    }
+    stream.end();
+    await once(stream, "finish");
+    console.log("RSS MB:", Math.round(process.memoryUsage().rss / 1e6));
+    console.log(
+        `Lines generated: ${lineCount}, data size: ${byteSize / 1000} KB`
+    );
+
+    const reportData = {
+        settings: settings,
+        "output-path": destinationFilePath,
+        "line-count": lineCount,
+        "byte-count": byteSize,
+    };
+
+    await fs.writeFile(reportFilePath, JSON.stringify(reportData));
+    console.log("Report saved");
     return settings;
 };
 
