@@ -9,8 +9,8 @@ The entire project is a Science experiment answering one question?
 | Phase                                    | status  |
 | ---------------------------------------- | ------- |
 | 0. Create project scaffolding            | Done    |
-| 1. Generate large NDJSON data            | WIP     |
-| 2. Build the naive baseline              | Planned |
+| 1. Generate large NDJSON data            | Done    |
+| 2. Build the naive baseline              | WIP     |
 | 3. Add measurement utilities             | Planned |
 | 4. Build source adapters                 | Planned |
 | 5. Build a line splitter transform       | Planned |
