@@ -1,12 +1,1 @@
-{
-    "settings": {
-        "rows": 2,
-        "payloadBytes": 32,
-        "seed": 12345,
-        "errorRatio": 0.25,
-        "outputPath": "small.ndjson"
-    },
-    "output-path": "C:\\Users\\gaikw\\Documents\\OS\\Code\\workbench\\data\\small.ndjson",
-    "line-count": 2,
-    "byte-count": 420
-}
+{"settings":{"rows":10000,"payloadBytes":1000,"seed":12345,"errorRatio":0.25,"outputPath":"data/access.ndjson"},"output-path":"C:\\Users\\gaikw\\Documents\\OS\\Code\\workbench\\data\\access.ndjson","line-count":10000,"byte-count":11812134}

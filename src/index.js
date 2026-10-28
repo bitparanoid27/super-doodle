@@ -4,6 +4,7 @@
 
 // Internal modules imported here
 import { runGenerate } from "./generate.js";
+import { runNaive } from "./naive.js";
 
 const HELP_TEXT = `
 npm <command>
@@ -82,6 +83,9 @@ const supportedFlags = [
     "seed",
     "error-ratio",
     "output-path",
+    "input",
+    "output",
+    "where",
 ];
 
 const overView = async () => {
@@ -121,10 +125,12 @@ const overView = async () => {
         return;
     }
 
-    console.log(`${receivedCommandLowerCase}: is not built and wired`);
     try {
         if (receivedCommandLowerCase === "generate") {
             await runGenerate(rest);
+        }
+        if (receivedCommandLowerCase === "naive") {
+            await runNaive(rest);
         }
     } catch (error) {
         console.error(`${error.message}`);

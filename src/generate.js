@@ -4,7 +4,6 @@ import { fileURLToPath } from "node:url";
 import path from "node:path";
 import fs from "node:fs/promises";
 import { createWriteStream } from "node:fs";
-import { pipeline } from "node:stream/promises";
 import { once } from "node:events";
 import { Buffer } from "node:buffer";
 
@@ -54,10 +53,10 @@ const runGenerate = async (args) => {
     const errorRatio = Number(values["error-ratio"] ?? "0.25");
     const outputPath = values["output-path"] ?? "data/access.ndjson";
 
-    //
+    //Need more robust checks.
     const finalDestination =
         outputPath === "data/access.ndjson" ? "access.ndjson" : outputPath;
-    let destinationFilePath = path.join(destinationDirPath, outputPath);
+    let destinationFilePath = path.join(destinationDirPath, finalDestination);
 
     if (!Number.isInteger(rows) || rows < 1) {
         throw new Error(
