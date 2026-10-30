@@ -6,6 +6,8 @@ import { fileURLToPath } from "node:url";
 import { Buffer } from "node:buffer";
 
 // Internal modules imported here.
+import { Counter } from "./utils/measurement.js";
+
 const fileURL = fileURLToPath(import.meta.url);
 let __dirname = path.dirname(fileURL);
 const dataDirName = path.join(__dirname, "../", "data");
@@ -30,9 +32,9 @@ async function runNaive(args) {
 
     let valuesLen = Object.keys(values).length;
     if (valuesLen === 0) {
-        console.log(`Default config selected \n 
-            --input "data/access.ndjson", --output "output/naive.ndjson", --where "status >= 500"
-            `);
+        console.log(
+            `Default config set: \n --input "data/access.ndjson", --output "output/naive.ndjson", --where "status >= 500"`
+        );
     }
 
     const rcdInput = values.input ?? "access.ndjson";
@@ -43,17 +45,25 @@ async function runNaive(args) {
     let accessFileName = path.join(dataDirName, rcdInput);
     let outputFileName = path.join(outputDirName, rcdOutput);
 
+    // Counter
+    const run = new Counter("naive");
+    run.start();
+    run.reading("started");
+    let measurementReport;
+
     try {
-        let initialMemoryUsg = Math.round(process.memoryUsage().rss / 1e6);
-        let startTime = Date.now();
+        // updating fileSize
+        const { size } = await fs.stat(accessFileName);
+        run.inputBytes = size;
 
         const returnedData = await fs.readFile(accessFileName, {
             encoding: "utf8",
         });
+        // reading after readfile
+        run.reading("post read file");
+
         const dataArray = returnedData.split("\n");
-        let rows = 0;
-        let count = 0;
-        let byteCount = 0;
+        run.reading("post split file");
 
         const matchedLines = [];
         let parts = rcdCondition.split(" ");
@@ -63,8 +73,9 @@ async function runNaive(args) {
         const value = Number(rawValue);
 
         for (const element of dataArray) {
-            rows = rows + 1;
             if (element.trim() === "") continue;
+            // counts
+            run.countRow();
 
             let checkedElement = JSON.parse(element);
 
@@ -88,11 +99,13 @@ async function runNaive(args) {
                 let currByteCnt = Buffer.byteLength(
                     JSON.stringify(checkedElement)
                 );
-                byteCount = byteCount + currByteCnt;
-                count = count + 1;
+
+                run.countMatch();
                 matchedLines.push(checkedElement);
             }
         }
+
+        run.reading("post file loop");
 
         let finalString = "";
         for (const element of matchedLines) {
@@ -100,27 +113,36 @@ async function runNaive(args) {
             finalString = finalString + strData;
         }
 
+        run.outputBytes = Buffer.byteLength(finalString);
+
         await fs.writeFile(outputFileName, finalString);
-        let postMemoryUsg = Math.round(process.memoryUsage().rss / 1e6);
+        // reading
 
-        let endTime = Date.now();
-        let timeElapsed = endTime - startTime;
-
-        let peakMemory = process.resourceUsage().maxRSS;
-
-        const outputReportJSON = {
-            rows: rows - 1,
-            matches: count,
-            "elapsed time": timeElapsed,
-            bytes: byteCount,
-            "peak memory": peakMemory,
+        run.reading("finished");
+        run.status = "ok";
+    } catch (error) {
+        run.status = "error";
+        throw error;
+    } finally {
+        run.stop();
+        measurementReport = {
+            mode: run.mode,
+            status: run.status,
+            input: { path: accessFileName, bytes: run.inputBytes },
+            output: { path: outputFileName, bytes: run.outputBytes },
+            counts: { rows: run.counts, matches: run.matches },
+            timing: {
+                startedAt: run.startedAt,
+                endedAt: run.endedAt,
+                elapsedTimeMS: run.elapsedTimeMS,
+            },
+            memory: {
+                peakRssKb: run.peakMemory,
+                readings: run.memoryReadings,
+            },
         };
 
-        // Save the report
-        await fs.writeFile(reportFileName, JSON.stringify(outputReportJSON));
-        console.log("Naive report saved at: ", reportFileName);
-    } catch (error) {
-        throw error;
+        await fs.writeFile(reportFileName, JSON.stringify(measurementReport));
     }
 }
 

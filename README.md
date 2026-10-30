@@ -13,8 +13,8 @@ It's my solution to the Stream Processing Workbench lab from thenodebook.com. I'
 | 0. Create project scaffolding            | Done    |
 | 1. Generate large NDJSON data            | Done    |
 | 2. Build the naive baseline              | Done    |
-| 3. Add measurement utilities             | WIP     |
-| 4. Build source adapters                 | Planned |
+| 3. Add measurement utilities             | Done    |
+| 4. Build source adapters                 | WIP     |
 | 5. Build a line splitter transform       | Planned |
 | 6. Build a filter DSL                    | Planned |
 | 7. Add transform plugins                 | Planned |
@@ -140,3 +140,9 @@ Memory grows in step with the input, at about 3 times the file size. That growth
 - The match count for `status >= 500` plus the count for `status < 500` equals `rows`. (Using `>` and `<` leaves out rows with a status of exactly 500.)
 - `wc -l output/naive.ndjson` equals `matches`.
 - An unsupported operator throws instead of writing an empty file.
+
+### Phase 03: Add measurement utilities
+
+**Artifact:** One report shape shared by naive, stream, pressure, compression, abort, and comparison runs.
+
+Report creation has been standardized, and modularized so reports of different functionalities are easy to compare.

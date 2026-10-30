@@ -1,7 +1,63 @@
 {
-    "rows": 10000,
-    "matches": 7558,
-    "elapsed time": 108,
-    "bytes": 8919354,
-    "peak memory": 120084
+    "mode": "naive",
+    "status": "ok",
+    "input": {
+        "path": "C:\\Users\\gaikw\\Documents\\OS\\Code\\workbench\\data\\access.ndjson",
+        "bytes": 11812134
+    },
+    "output": {
+        "path": "C:\\Users\\gaikw\\Documents\\OS\\Code\\workbench\\output\\naive.ndjson",
+        "bytes": 2885222
+    },
+    "counts": { "rows": 10000, "matches": 2442 },
+    "timing": {
+        "startedAt": "2026-10-30T14:57:49.216Z",
+        "endedAt": "2026-10-30T14:57:49.418Z",
+        "elapsedTimeMS": 199.39329999999998
+    },
+    "memory": {
+        "peakRssKb": 82900,
+        "readings": [
+            {
+                "label": "started",
+                "rss": 31698944,
+                "heapTotal": 6516736,
+                "heapUsed": 5478288,
+                "external": 1866416,
+                "arrayBuffers": 33925
+            },
+            {
+                "label": "post read file",
+                "rss": 45490176,
+                "heapTotal": 26021888,
+                "heapUsed": 16726512,
+                "external": 2369085,
+                "arrayBuffers": 536554
+            },
+            {
+                "label": "post split file",
+                "rss": 57782272,
+                "heapTotal": 46223360,
+                "heapUsed": 28960848,
+                "external": 2369085,
+                "arrayBuffers": 534954
+            },
+            {
+                "label": "post file loop",
+                "rss": 77651968,
+                "heapTotal": 65622016,
+                "heapUsed": 33367800,
+                "external": 2367485,
+                "arrayBuffers": 534954
+            },
+            {
+                "label": "finished",
+                "rss": 60833792,
+                "heapTotal": 45318144,
+                "heapUsed": 10573736,
+                "external": 4729628,
+                "arrayBuffers": 2897097
+            }
+        ]
+    }
 }
